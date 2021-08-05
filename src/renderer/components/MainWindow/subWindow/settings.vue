@@ -7,7 +7,7 @@
             <div class="left">
               <div class="title">
                 自动刷新<span style="color:#FF9900"
-                  >&nbsp;&nbsp;#DEV_ENV_DISABLED_INVALID_FUNC#</span
+                  >&nbsp;&nbsp;#TEST_FUNCTION | INVALID#</span
                 >
               </div>
               <div class="description">设置是否开启自动刷新服务器列表</div>
@@ -27,7 +27,7 @@
             <div class="left">
               <div class="title">
                 自动刷新时长<span style="color:#FF9900"
-                  >&nbsp;&nbsp;#DEV_ENV_DISABLED_INVALID_FUNC#</span
+                  >&nbsp;&nbsp;#TEST_FUNCTION | INVALID#</span
                 >
               </div>
               <div class="description">
@@ -50,7 +50,7 @@
             <div class="left">
               <div class="title">
                 侧边栏<span style="color:#FF9900"
-                  >&nbsp;&nbsp;#DEV_ENV_VISIBLE_ONLY#</span
+                  >&nbsp;&nbsp;#DEV_ENV_ONLY#</span
                 >
               </div>
               <div class="description">设置侧边栏是否收缩</div>

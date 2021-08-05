@@ -3,9 +3,9 @@
     <div class="navigator">
       <div class="logo">
         <div class="icon iconfont icon-nintendoswitch"></div>
-        <div class="title">LanPlay GUI</div>
+        <div class="title">LanPlay</div>
       </div>
-      <div class="tip">#beta1_210611#</div>
+      <div class="tip">#beta2_210805#</div>
       <div class="control">
         <div class="btn" @click="onbtnMinClick()">
           <div class="btnMin"></div>

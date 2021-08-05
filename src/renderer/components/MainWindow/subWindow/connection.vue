@@ -41,19 +41,79 @@
           </div>
         </div>
         <div class="checking">
-          <span class="icon fa fa-spinner fa-pulse"></span>
-          <span class="title">正在检查您是否已设置成功…</span>
+          <span class="title">请按提示修改您机器的网络设置</span>
         </div>
-        <div class="cancelConn" @click="onbtnCancelConnClick()">取消连接</div>
+        <div class="confirmConn" @click="onbtnConfirmConnClick()">我已阅读</div>
       </div>
       <div class="connCont" v-show="checked">
         <div class="connection">
-          <div class="serverInfo">
-            <div class="url">服务器URL</div>
-            <div class="name">服务器备注信息</div>
+          <div class="banner">
+            <div class="url">已连接到 {{ this.connData.url }}</div>
+            <div class="name">
+              {{
+                this.connData.name === "" ? "未命名服务器" : this.connData.name
+              }}
+            </div>
+          </div>
+          <div class="states">
+            <div class="item">
+              <div class="count">{{ this.connData.ping }}</div>
+              <div class="title">
+                <span
+                  class="el-icon-timer"
+                  style="color:#76c9b6;font-size:18px;transform:translateY(3px);"
+                ></span>
+                <span>即时延迟</span>
+              </div>
+            </div>
+            <div class="item">
+              <div class="count">
+                {{ this.connData.online - this.connData.idle }}
+              </div>
+              <div class="title">
+                <span
+                  class="el-icon-user"
+                  style="color:#76c9b6;font-size:18px;transform:translateY(3px);"
+                ></span>
+                <span>活跃人数</span>
+              </div>
+            </div>
+            <div class="item">
+              <div class="count">{{ this.connData.idle }}</div>
+              <div class="title">
+                <span
+                  class="el-icon-user-solid"
+                  style="color:#76c9b6;font-size:18px;transform:translateY(3px);"
+                ></span>
+                <span>挂机人数</span>
+              </div>
+            </div>
+          </div>
+          <div class="rooms" v-show="this.connData.rooms.length > 0">
+            <Room
+              class="room"
+              v-for="room in this.connData.rooms"
+              :room="room"
+              :key="`${room.hostPlayerName}:${room.contentId}`"
+            />
+          </div>
+          <div class="control">
+            <div class="btn" @click="closeTip = true">断开连接</div>
           </div>
         </div>
       </div>
+      <el-dialog
+        title="提示"
+        :visible.sync="closeTip"
+        width="30%"
+        :show-close="false"
+      >
+        <span>确定要断开连接吗？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="closeTip = false">取 消</el-button>
+          <el-button type="primary" @click="btnKillHandler()">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -61,14 +121,18 @@
 <script>
 import { spawn } from "child_process";
 import { ipcRenderer } from "electron";
+import Room from "../rooms/Room.vue";
 const { app } = require("electron").remote;
 export default {
-  components: {},
+  components: {
+    Room,
+  },
   data() {
     return {
       checked: false,
       lanplay: undefined,
       lanplayData: "",
+      closeTip: false,
     };
   },
   computed: {
@@ -78,7 +142,12 @@ export default {
     connData() {
       return this.$store.state.servers.serverList.filter(
         (value) => value.id == this.connID
-      );
+      )[0];
+    },
+    connUrl() {
+      return this.$store.state.servers.serverList.filter(
+        (value) => value.id == this.connID
+      )[0].url;
     },
     settings() {
       return this.$store.state.settings.settings;
@@ -88,25 +157,24 @@ export default {
     this.$store.commit("changeSidebar", { state: true });
     let pathArr = app.getAppPath("exe").split("\\");
     let path = pathArr.slice(0, pathArr.length - 1).join("\\");
-    ipcRenderer.send("showMsg", this.connData);
-    let lanPlayParams = ["--relay-server-addr " + this.connData.url];
+    let lanPlayParams = [];
+    lanPlayParams.push(`--relay-server-addr ${this.connUrl}`);
     if (this.settings.lanplay.interface != 0)
-      lanPlayParams.push("--netif " + this.settings.lanplay.interface);
+      lanPlayParams.push(`--netif ${this.settings.lanplay.interface}`);
     this.lanplay = spawn(path + "\\lan-play-win64.exe", lanPlayParams);
-    this.lanplay.stdout.on("data", (data) => {
-      if (this.lanplayData == "") this.checked = true;
-      this.lanplayData += data.toString();
-      ipcRenderer.send("showMsg", "[lanplaydata]" + data.toString());
-    });
   },
   destroyed() {
     this.lanplay.kill();
     this.$store.commit("changeSidebar", { state: false });
   },
   methods: {
-    onbtnCancelConnClick() {
+    onbtnConfirmConnClick() {
+      if (this.lanplayData == "") this.checked = true;
+    },
+    btnKillHandler() {
       this.$router.push("/serverList");
       this.$store.commit("updatePlayingID", -1);
+      this.closeTip = false;
     },
   },
 };
@@ -189,7 +257,7 @@ export default {
   margin-right: auto;
   margin-top: 25px;
 }
-.checkConn > .cancelConn {
+.checkConn > .confirmConn {
   color: #707070;
   text-decoration: underline;
   font-size: 13px;
@@ -198,14 +266,8 @@ export default {
   transform: translateX(-50%);
   bottom: 30px;
 }
-.checkConn > .cancelConn:hover {
+.checkConn > .confirmConn:hover {
   color: #505050;
-}
-.checking > .icon {
-  top: 2px;
-  position: relative;
-  color: #505050;
-  font-size: 14px;
 }
 .checking > .title {
   font-size: 14px;
@@ -247,19 +309,102 @@ export default {
 .connCont > .connection {
   height: 100%;
   width: 100%;
-  border: 1px solid blue;
+  // border: 1px dashed rgba(192, 192, 192, 0.5);
+  position: relative;
+}
+.connection > .banner {
+  position: relative;
+  text-align: center;
+  padding-top: 60px;
+}
+.connection > .banner > .url {
+  color: #76c9b6;
+  font-size: 17px;
+  font-weight: bold;
+}
+.connection > .banner > .name {
+  margin-top: 3px;
+  color: #bbb;
+  font-size: 13px;
+}
+.connection > .states {
+  position: relative;
+  margin-top: 40px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.connection > .states > .item {
+  width: 180px;
+  height: 180px;
+  border-radius: 5px;
+  background-color: rgba(192, 192, 192, 0.1);
+  border: 1px solid #ccc;
+  position: relative;
+}
+.connection > .states > .item > .title {
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+  position: absolute;
+  height: 25px;
+  line-height: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 25px;
+}
+.connection > .states > .item > .count {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50px;
+  font-size: 50px;
+  color: #76c9b6;
+  font-weight: bolder;
+  font-family: "Arial";
+}
+.btn {
+  height: 40px;
+  min-width: 110px;
+  border-radius: 20px;
+  box-shadow: 0 0 8px rgba(160, 160, 160, 0.6);
+  text-align: center;
+  line-height: 40px;
+  position: relative;
+  margin-left: 20px;
+  color: #999;
+  font-size: 14px;
+}
+.btn:hover {
+  box-shadow: 0 0 8px rgba(160, 160, 160, 0.8);
+}
+.btn:active {
+  box-shadow: 0 0 8px rgba(160, 160, 160, 1);
+}
+.connection > .control {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-start;
+  height: 50px;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 20px;
+  padding-left: 70px;
+  padding-right: 70px;
 }
-.connCont > .connection > .serverInfo {
-  border: 1px solid black;
-  width: 400px;
-  height: 100px;
+.rooms {
+  width: 100%;
+  margin-top: 10px;
+  min-height: 29px;
+  max-height: 87px;
+  overflow: auto;
+  background-color: #fff;
 }
-.serverInfo > .url {
-  font-size: 25px;
+.rooms .room {
+  height: 25px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  width: 100%;
+  overflow: hidden;
 }
 </style>
