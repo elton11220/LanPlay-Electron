@@ -5,7 +5,7 @@
         <div class="icon iconfont icon-nintendoswitch"></div>
         <div class="title">LanPlay</div>
       </div>
-      <div class="tip">#beta2_210805#</div>
+      <div class="tip">#beta2_210806#</div>
       <div class="control">
         <div class="btn" @click="onbtnMinClick()">
           <div class="btnMin"></div>
@@ -43,7 +43,7 @@ export default {
   color: #ff9900;
   font-size: 14px;
   position: absolute;
-  left: 200px;
+  left: 160px;
   top: 20px;
   font-weight: bold;
   background-color: #fff;

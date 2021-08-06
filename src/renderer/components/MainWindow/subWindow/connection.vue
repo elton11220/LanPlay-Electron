@@ -98,6 +98,7 @@
             />
           </div>
           <div class="control">
+            <div class="btn" @click="getConnectionInfo()">刷新</div>
             <div class="btn" @click="closeTip = true">断开连接</div>
           </div>
         </div>
@@ -121,6 +122,8 @@
 <script>
 import { spawn } from "child_process";
 import { ipcRenderer } from "electron";
+import { fetchWithTimeout } from "../../../utils/fetch";
+import { sanitizeData } from "../../../utils/rooms";
 import Room from "../rooms/Room.vue";
 const { app } = require("electron").remote;
 export default {
@@ -149,6 +152,13 @@ export default {
         (value) => value.id == this.connID
       )[0].url;
     },
+    connIndex() {
+      let val;
+      this.$store.state.servers.serverList.forEach((value, index) => {
+        if (value.id == this.connID) val = index;
+      });
+      return val;
+    },
     settings() {
       return this.$store.state.settings.settings;
     },
@@ -159,22 +169,111 @@ export default {
     let path = pathArr.slice(0, pathArr.length - 1).join("\\");
     let lanPlayParams = [];
     lanPlayParams.push(`--relay-server-addr ${this.connUrl}`);
+    //LanPlay parameters
     if (this.settings.lanplay.interface != 0)
       lanPlayParams.push(`--netif ${this.settings.lanplay.interface}`);
-    this.lanplay = spawn(path + "\\lan-play-win64.exe", lanPlayParams);
+    //child_process parameters
+    let cpPara = {
+      shell: true,
+      stdio: "inherit",
+      detached: !this.settings.common.hideLanPlayConsole,
+    };
+    //
+    this.lanplay = spawn(path + "\\lan-play-win64.exe", lanPlayParams, cpPara);
+    ipcRenderer.send("showMsg", this.connData);
+    let autoRefreshTimer = setInterval(() => {
+      ipcRenderer.send("showMsg", "autorefresh");
+      this.getConnectionInfo();
+    }, 10000);
+    this.$once("hook:beforeDestroy", () => {
+      clearInterval(autoRefreshTimer);
+    });
   },
-  destroyed() {
-    this.lanplay.kill();
+  beforeDestroy() {
     this.$store.commit("changeSidebar", { state: false });
   },
   methods: {
     onbtnConfirmConnClick() {
       if (this.lanplayData == "") this.checked = true;
+      this.getConnectionInfo();
     },
     btnKillHandler() {
-      this.$router.push("/serverList");
-      this.$store.commit("updatePlayingID", -1);
-      this.closeTip = false;
+      let kill = spawn("taskkill", ["/pid", this.lanplay.pid, "/f", "/t"]);
+      kill.on("close", () => {
+        this.lanplay.kill();
+        this.closeTip = false;
+        this.$router.push("/serverList");
+        this.$store.commit("updatePlayingID", -1);
+      });
+    },
+    async getServerInfo(host) {
+      let url;
+      if (!host.includes("http")) url = `http://${host}/info`;
+      else url = `${host}/info`;
+      try {
+        var response = await fetchWithTimeout(url);
+        let json = await response.json();
+        return json;
+      } catch (error) {
+        return JSON.parse(`{"online":-1,"idle":-1,"version":"-","ping":-1}`);
+      }
+    },
+    async getRoomInfo(host) {
+      let url;
+      if (!host.includes("http")) url = `http://${host}/`;
+      else url = `${host}/`;
+      try {
+        var response = await fetchWithTimeout(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            query:
+              "{room{contentId hostPlayerName nodeCount nodeCountMax advertiseData nodes{playerName}}}",
+          }),
+        });
+        let json = await response.json();
+        return json;
+      } catch (error) {
+        return JSON.parse(`{"data":{"room":[]}}`);
+      }
+    },
+    getConnectionInfo() {
+      let startTime = Date.now();
+      ipcRenderer.send("showMsg", "refreshStart");
+      this.getServerInfo(this.connData.url)
+        .then((res) => {
+          let deltaTime = Math.ceil((Date.now() - startTime) * 0.3);
+          if (res.online == -1) deltaTime = -1;
+          Object.assign(res, { ping: deltaTime });
+          this.$store.commit("updateServer", {
+            index: this.connIndex,
+            data: res,
+          });
+          if (res.online != -1) {
+            this.getRoomInfo(this.connData.url).then((resp) => {
+              this.$store.commit("updateServer", {
+                index: this.connIndex,
+                data: {
+                  rooms: resp.data.room.map((room) => sanitizeData(room)),
+                },
+              });
+              ipcRenderer.send(
+                "fetched-room",
+                JSON.stringify(this.servers[index].rooms)
+              );
+            });
+          }
+        })
+        .catch(() => {
+          this.$store.commit("updateServer", {
+            index: index,
+            data: JSON.parse(`{"online":-1,"idle":-1,"version":"-","ping":-1}`),
+          });
+          ipcRenderer.send("showMsg", "updErr");
+        });
     },
   },
 };

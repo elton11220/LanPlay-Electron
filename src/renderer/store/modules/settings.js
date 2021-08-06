@@ -3,7 +3,8 @@ const state = {
         common: {
             autorefresh: false,
             autointerval: 5,
-            sidebar: false
+            sidebar: false,
+            hideLanPlayConsole: true
         },
         lanplay: {
             showdetail: false,

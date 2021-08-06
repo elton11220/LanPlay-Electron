@@ -66,6 +66,26 @@
               </div>
             </div>
           </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                隐藏LanPlay窗口
+              </div>
+              <div class="description">
+                连接到服务器后隐藏LanPlay的控制台窗口
+              </div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-switch
+                  v-model="savedsettings.common.hideLanPlayConsole"
+                  active-color="#76c9b6"
+                  inactive-color="#c0c0c0"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
         </div>
       </el-tab-pane>
       <el-tab-pane label="LanPlay设置" name="second">
@@ -160,7 +180,7 @@
               draggable="false"
             />
             <div class="meName">绿胡子大叔</div>
-            <div class="meUrl">https://github.com/elton11220/</div>
+            <div class="meUrl">https://gitee.com/elton11220/</div>
           </div>
           <div class="refInfo">
             <div class="baseSoft">
