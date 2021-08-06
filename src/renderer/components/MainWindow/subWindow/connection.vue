@@ -195,6 +195,10 @@ export default {
   methods: {
     onbtnConfirmConnClick() {
       if (this.lanplayData == "") this.checked = true;
+      this.$message({
+        message: "当检测到支持的游戏时，房间列表会自动显示",
+        center: true,
+      });
       this.getConnectionInfo();
     },
     btnKillHandler() {
@@ -242,7 +246,6 @@ export default {
     },
     getConnectionInfo() {
       let startTime = Date.now();
-      ipcRenderer.send("showMsg", "refreshStart");
       this.getServerInfo(this.connData.url)
         .then((res) => {
           let deltaTime = Math.ceil((Date.now() - startTime) * 0.3);

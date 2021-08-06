@@ -399,8 +399,15 @@ export default {
       });
     },
     onbtnPlayClick(index) {
+      const loading = this.$loading({
+        lock: true,
+        text: "正在连接",
+        spinner: "el-icon-loading",
+        background: "rgba(255,255,255,0.7)",
+      });
       this.$store.commit("updatePlayingID", this.servers[index].id);
       this.$router.push("/connection");
+      loading.close();
     },
     async getServerInfo(host) {
       let url;
