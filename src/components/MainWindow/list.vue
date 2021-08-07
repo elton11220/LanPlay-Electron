@@ -150,6 +150,7 @@
       :modal="false"
       style="border-top-right-radius:10px;border-bottom-right-radius:10px;"
       @closed="onDrawerClosed()"
+      @opened="onDrawerOpened()"
     >
       <div class="drawer" style="height:100%;width:100%;" v-if="infoDrawer">
         <div class="info">
@@ -331,8 +332,8 @@ export default {
       } else {
         this.$store.commit("addServer", {
           id: Date.now(),
-          url: this.addServer.url,
-          name: this.addServer.name,
+          url: this.addServer.url.trim(),
+          name: this.addServer.name.trim(),
         });
         this.getAllServerInfo();
         this.onbtnAddServerClose();
@@ -361,6 +362,9 @@ export default {
       this.editorText = "";
       this.editor = false;
     },
+    onDrawerOpened() {
+      this.servers[this.drawerID].menuOpen = false;
+    },
     onbtnEditClick() {
       if (!this.editor) {
         this.editorText = "";
@@ -379,7 +383,7 @@ export default {
         let content = this.editorText;
         this.$store.commit("updateServer", {
           index: index,
-          data: { name: content },
+          data: { name: content.trim() },
         });
         this.onbtnCloseEditorClick();
       }

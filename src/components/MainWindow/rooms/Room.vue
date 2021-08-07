@@ -128,7 +128,7 @@ export default {
   display: inline-block;
   height: 25px;
   line-height: 25px;
-  padding-right: 4px;
+  padding-right: 5px;
 }
 .group > .content {
   font-size: 13px;
