@@ -1,6 +1,6 @@
 import gamesSource from "/public/games.json"
 
-const serverMapping = ({
+const addServerMapping = ({
   id,
   url,
   name = "",
@@ -46,7 +46,7 @@ const mutations = {
     state.serverList = [];
   },
   addServer(state, payload) {
-    state.serverList.push(serverMapping(payload))
+    state.serverList.push(addServerMapping(payload))
   }
 }
 const getters = {}

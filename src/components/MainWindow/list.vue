@@ -315,6 +315,17 @@ import { sanitizeData } from "../../assets/utils/rooms";
 import Room from "./rooms/Room.vue";
 export default {
   methods: {
+    saveLocalServerList() {
+      let serversData = this.servers.map((value) => {
+        return {
+          id: value.id,
+          url: value.url,
+          name: value.name,
+          favour: value.favour,
+        };
+      });
+      ipcRenderer.send("saveLocalServerList", serversData);
+    },
     onbtnAddServerClick() {
       this.addServer.url = "";
       this.addServer.name = "";
@@ -338,6 +349,7 @@ export default {
           url: this.addServer.url.trim(),
           name: this.addServer.name.trim(),
         });
+        this.saveLocalServerList();
         this.getAllServerInfo();
         this.onbtnAddServerClose();
         this.$message({
@@ -356,6 +368,7 @@ export default {
     },
     onbtnDelClick(index) {
       this.$store.commit("removeServer", this.servers[index].id);
+      this.saveLocalServerList();
     },
     onbtnInfoClick(index) {
       this.drawerID = index;

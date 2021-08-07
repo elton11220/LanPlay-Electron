@@ -1,9 +1,12 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcRenderer } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+const Estore = require("electron-store");
+const estore = new Estore();
 
 import store from './store'
 import { ipcMain } from 'electron'
@@ -23,6 +26,14 @@ ipcMain.on('fetched-room', (event, arg) => {
 })
 ipcMain.on('showMsg', (event, arg) => {
   console.log('[DEBUG]:',arg)
+})
+ipcMain.on('saveLocalSettings', (event,arg) => {
+  delete arg.lanplay.interfaces;
+  delete arg.states.firstRun;
+  estore.set(arg);
+})
+ipcMain.on('saveLocalServerList', (event, arg) => {
+  estore.set({ "servers": arg });
 })
 
 // Scheme must be registered before the app is ready

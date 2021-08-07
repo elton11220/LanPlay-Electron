@@ -293,6 +293,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from "electron";
 export default {
   data() {
     return {
@@ -322,6 +323,13 @@ export default {
     proxyEnable() {
       return this.$store.state.settings.settings.lanplay.proxy.enable;
     },
+  },
+  beforeDestroy() {
+    ipcRenderer.send("saveLocalSettings", this.savedsettings);
+    this.$message({
+      message: "设置保存成功",
+      type: "success",
+    });
   },
 };
 </script>
