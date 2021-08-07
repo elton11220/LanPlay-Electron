@@ -17,10 +17,6 @@
         <i class="el-icon-star-on"></i>
         <span slot="title">我的收藏</span>
       </el-menu-item>
-      <el-menu-item index="/customConn" :disabled="isPlaying">
-        <i class="el-icon-s-promotion"></i>
-        <span slot="title">自定义连接</span>
-      </el-menu-item>
       <el-menu-item index="/settings" :disabled="isPlaying">
         <i class="el-icon-setting"></i>
         <span slot="title">设置</span>

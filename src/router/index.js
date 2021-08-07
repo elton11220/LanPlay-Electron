@@ -17,10 +17,6 @@ const routes = [
           component: require('@/components/MainWindow/subWindow/serverList').default
         },
         {
-          path: 'customConn',
-          component: require('@/components/MainWindow/subWindow/customConn').default
-        },
-        {
           path: 'myFavour',
           component: require('@/components/MainWindow/subWindow/myFavour').default
         },
