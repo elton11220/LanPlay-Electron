@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <div class="empty" v-show="servers.length == 0">
+    <div
+      class="empty"
+      v-show="(servers.length == 0 && !favour) || (favourCount == 0 && favour)"
+    >
       {{ !favour ? "服务器列表为空，点击下方按钮添加服务器" : "收藏列表为空" }}
     </div>
     <div class="items">
@@ -516,6 +519,13 @@ export default {
     },
     settings() {
       return this.$store.state.settings.settings;
+    },
+    favourCount() {
+      let count = 0;
+      this.$store.state.servers.serverList.forEach((value) => {
+        if (value.favour) count++;
+      });
+      return count;
     },
   },
   components: {
