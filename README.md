@@ -28,3 +28,5 @@ npm run electron:serve
 npm run electron:build
 ```
 
+![软件截图1](https://images.gitee.com/uploads/images/2021/0807/171641_aa611fdd_7872762.png "sc1.png")
+![软件截图2](https://images.gitee.com/uploads/images/2021/0807/171707_2cb7de20_7872762.png "sc2.png")
