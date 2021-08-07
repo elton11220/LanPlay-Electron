@@ -45,7 +45,7 @@
           <div class="item">
             <div class="left">
               <div class="title">
-                侧边栏
+                隐藏侧边栏
                 <!-- <span style="color:#FF9900">&nbsp;&nbsp;#DEV_ENV_VISIBLE#</span> -->
               </div>
               <div class="description">设置侧边栏是否收缩</div>
@@ -87,24 +87,8 @@
         <div class="common">
           <div class="item">
             <div class="left">
-              <div class="title">显示调试信息</div>
-              <div class="description">设置是否显示LanPlay运行时的信息</div>
-            </div>
-            <div class="right">
-              <div class="content">
-                <el-switch
-                  v-model="savedsettings.lanplay.showdetail"
-                  active-color="#76c9b6"
-                  inactive-color="#c0c0c0"
-                >
-                </el-switch>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="left">
-              <div class="title">网络接口</div>
-              <div class="description">选择LanPlay作用的网络接口</div>
+              <div class="title">网络适配器</div>
+              <div class="description">选择LanPlay作用的网络适配器</div>
             </div>
             <div class="right">
               <div class="content">
@@ -122,6 +106,123 @@
                   >
                   </el-option>
                 </el-select>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                BroadCast
+              </div>
+              <div class="description">LanPlay启动参数--broadcast</div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-switch
+                  v-model="savedsettings.lanplay.broadcast"
+                  active-color="#76c9b6"
+                  inactive-color="#c0c0c0"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                Fake Internet
+              </div>
+              <div class="description">LanPlay启动参数--fake-internet</div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-switch
+                  v-model="savedsettings.lanplay.fakeinternet"
+                  active-color="#76c9b6"
+                  inactive-color="#c0c0c0"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                自定义PMTU
+              </div>
+              <div class="description">
+                LanPlay启动参数--pmtu xxxx
+              </div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-switch
+                  v-model="savedsettings.lanplay.pmtu.enable"
+                  active-color="#76c9b6"
+                  inactive-color="#c0c0c0"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                PMTU
+              </div>
+              <div class="description">
+                设置启动参数PMTU的值
+              </div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-input-number
+                  v-model="savedsettings.lanplay.pmtu.value"
+                  :min="0"
+                  size="mini"
+                  :disabled="!savedsettings.lanplay.pmtu.enable"
+                ></el-input-number>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                代理
+              </div>
+              <div class="description">
+                LanPlay启动参数----socks5-server-addr proxy
+              </div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-switch
+                  v-model="savedsettings.lanplay.proxy.enable"
+                  active-color="#76c9b6"
+                  inactive-color="#c0c0c0"
+                >
+                </el-switch>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left">
+              <div class="title">
+                代理服务器
+              </div>
+              <div class="description">
+                设置代理服务器的地址
+              </div>
+            </div>
+            <div class="right">
+              <div class="content">
+                <el-input
+                  size="mini"
+                  placeholder="请输入内容"
+                  suffix-icon="el-icon-monitor"
+                  v-model="savedsettings.lanplay.proxy.value"
+                  :disabled="!savedsettings.lanplay.proxy.enable"
+                ></el-input>
               </div>
             </div>
           </div>
@@ -202,6 +303,14 @@ export default {
     hideSidebar: function(newVal) {
       this.$store.commit("changeSidebar", { state: newVal });
     },
+    proxyEnable: function(newVal) {
+      if (newVal) {
+        this.$message({
+          message: "注意：错误的代理服务器地址将导致连接失败",
+          type: "warning",
+        });
+      }
+    },
   },
   computed: {
     savedsettings() {
@@ -209,6 +318,9 @@ export default {
     },
     hideSidebar() {
       return this.$store.state.settings.settings.common.hideSideBar;
+    },
+    proxyEnable() {
+      return this.$store.state.settings.settings.lanplay.proxy.enable;
     },
   },
 };

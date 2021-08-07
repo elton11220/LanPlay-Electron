@@ -173,6 +173,15 @@ export default {
     //LanPlay parameters
     if (this.settings.lanplay.interface != 0)
       lanPlayParams.push(`--netif ${this.settings.lanplay.interface}`);
+    if (this.settings.lanplay.broadcast) lanPlayParams.push("--broadcast");
+    if (this.settings.lanplay.fakeinternet)
+      lanPlayParams.push("--fake-internet");
+    if (this.settings.lanplay.pmtu.enable)
+      lanPlayParams.push(`--pmtu ${this.settings.lanplay.pmtu.value}`);
+    if (this.settings.lanplay.proxy.enable)
+      lanPlayParams.push(
+        `--socks5-server-addr ${this.settings.lanplay.proxy.value}`
+      );
     //child_process parameters
     let cpPara = {
       shell: true,

@@ -7,14 +7,23 @@ const state = {
             hideLanPlayConsole: true
         },
         lanplay: {
-            showdetail: false,
             interface: 0,
             interfaces: [
                 {
                     value: 0,
                     label:"全选"
                 }
-            ]
+            ],
+            broadcast: false,
+            fakeinternet: false,
+            pmtu: {
+                enable: false,
+                value: 1500
+            },
+            proxy: {
+                enable: false,
+                value: ""
+            }
         },
         states: {
             firstRun: true,
