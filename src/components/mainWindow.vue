@@ -21,6 +21,7 @@ import SideBar from "./MainWindow/sideBar.vue";
 import { spawn } from "child_process";
 import { ipcRenderer } from "electron";
 const { app } = require("@electron/remote");
+const Estore = require("electron-store");
 export default {
   components: {
     TitleBar,
@@ -35,7 +36,6 @@ export default {
     },
   },
   mounted() {
-    ipcRenderer.send("showMsg", process.versions.electron);
     if (this.$store.state.settings.settings.lanplay.interfaces.length > 1)
       return;
     else {
@@ -62,6 +62,20 @@ export default {
           this.$store.dispatch("AsyncUpdateInterface", interfaces);
         }
       });
+      //load local settings from json
+      let estore = new Estore();
+      let tempSettings = {};
+      tempSettings.common = estore.get("common");
+      tempSettings.lanplay = estore.get("lanplay");
+      tempSettings.states = estore.get("states");
+      tempSettings.lanplay.interfaces = [{ value: 0, label: "全选" }];
+      this.$store.commit("assignSettings", tempSettings);
+      let tempServerList = estore.get("servers");
+      if (tempServerList.length > 0) {
+        tempServerList.forEach((value) => {
+          this.$store.commit("addServer", value);
+        });
+      }
     }
   },
 };
