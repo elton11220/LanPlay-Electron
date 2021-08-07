@@ -31,3 +31,6 @@ npm run electron:build
 ## Concact
 
 [elton11220@foxmail.com](mailto:elton11220@foxmail.com)
+
+![img1](https://images.gitee.com/uploads/images/2021/0807/171641_aa611fdd_7872762.png "sc1.png")
+![img2](https://images.gitee.com/uploads/images/2021/0807/171707_2cb7de20_7872762.png "sc2.png")
