@@ -1,22 +1,30 @@
-# lanplay_gui
+# LanPlay GUI
 
-> the gui for the consoleapplication switch-lan-play
+## 项目介绍
 
-#### Build Setup
+这是一个使用electron开发的LanPlay的界面程序，支持房间列表显示
 
-``` bash
-# install dependencies
-npm install
+程序中使用了[GitHub - spacemeowx2/switch-lan-play](https://github.com/spacemeowx2/switch-lan-play)，房间列表模块使用了[GitHub - GreatWizard/lan-play-status](https://github.com/GreatWizard/lan-play-status)
 
-# serve with hot reload at localhost:9080
-npm run dev
+项目目前正在开发中
 
-# build electron application for production
-npm run build
+## 项目部署
 
+### 编译调试项目
 
 ```
+npm install
+```
 
----
+### 编译调试项目
+```
+npm run dev
+或
+npm run electron:serve
+```
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+### 编译打包项目
+```
+npm run electron:build
+```
+
