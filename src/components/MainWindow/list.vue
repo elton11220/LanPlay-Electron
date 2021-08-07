@@ -527,12 +527,19 @@ export default {
     }
     this.$store.commit("setState", { firstRun: false });
     // auto refresh server info and rooms data
-    // let autoRefreshTimer = setInterval(() => {
-
-    // }, 10000);
-    // this.$once("hook:beforeDestroy", () => {
-    //   clearInterval(autoRefreshTimer);
-    // });
+    if (
+      this.settings.common.autointerval < 8 ||
+      this.settings.common.autointerval > 30
+    )
+      this.$store.commit("assignSettings", { common: { autointerval: 10 } });
+    let autoGetServersInfo = setInterval(() => {
+      if (this.settings.common.autorefresh) {
+        if (this.servers.length > 0) this.getAllServerInfo();
+      }
+    }, this.settings.common.autointerval * 1000);
+    this.$once("hook:beforeDestroy", () => {
+      clearInterval(autoGetServersInfo);
+    });
   },
 };
 </script>

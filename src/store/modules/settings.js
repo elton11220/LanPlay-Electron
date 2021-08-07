@@ -3,7 +3,7 @@ const state = {
         common: {
             autorefresh: false,
             autointerval: 10,
-            sidebar: false,
+            hideSideBar: false,
             hideLanPlayConsole: true
         },
         lanplay: {
@@ -18,7 +18,8 @@ const state = {
         },
         states: {
             firstRun: true,
-            playingID:-1
+            playingID: -1,
+            sidebar: false,
         }
     },
 }
@@ -34,10 +35,13 @@ const mutations = {
         Object.assign(state.settings.states, payload);
     },
     changeSidebar(state, payload) {
-        state.settings.common.sidebar = payload.state
+        state.settings.states.sidebar = payload.state
     },
     updatePlayingID(state, n) {
         state.settings.states.playingID = n;
+    },
+    assignSettings(state, payload) {
+        Object.assign(state.settings,payload)
     }
 }
 

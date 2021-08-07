@@ -6,9 +6,7 @@
           <div class="item">
             <div class="left">
               <div class="title">
-                自动刷新<span style="color:#FF9900"
-                  >&nbsp;&nbsp;#DEV_FUNCTION#</span
-                >
+                自动刷新
               </div>
               <div class="description">设置是否开启自动刷新服务器列表</div>
             </div>
@@ -26,9 +24,7 @@
           <div class="item">
             <div class="left">
               <div class="title">
-                自动刷新时长<span style="color:#FF9900"
-                  >&nbsp;&nbsp;#DEV_FUNCTION#</span
-                >
+                自动刷新时长
               </div>
               <div class="description">
                 当开启自动刷新时，自动刷新服务器列表的时长(8-30秒)
@@ -49,16 +45,15 @@
           <div class="item">
             <div class="left">
               <div class="title">
-                侧边栏<span style="color:#FF9900"
-                  >&nbsp;&nbsp;#DEV_ENV_VISIBLE#</span
-                >
+                侧边栏
+                <!-- <span style="color:#FF9900">&nbsp;&nbsp;#DEV_ENV_VISIBLE#</span> -->
               </div>
               <div class="description">设置侧边栏是否收缩</div>
             </div>
             <div class="right">
               <div class="content">
                 <el-switch
-                  v-model="savedsettings.common.sidebar"
+                  v-model="savedsettings.common.hideSideBar"
                   active-color="#76c9b6"
                   inactive-color="#c0c0c0"
                 >
@@ -203,9 +198,17 @@ export default {
       activeName: "first",
     };
   },
+  watch: {
+    hideSidebar: function(newVal) {
+      this.$store.commit("changeSidebar", { state: newVal });
+    },
+  },
   computed: {
     savedsettings() {
       return this.$store.state.settings.settings;
+    },
+    hideSidebar() {
+      return this.$store.state.settings.settings.common.hideSideBar;
     },
   },
 };

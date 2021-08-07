@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     collapse() {
-      return this.$store.state.settings.settings.common.sidebar;
+      return this.$store.state.settings.settings.states.sidebar;
     },
   },
   mounted() {

@@ -164,7 +164,8 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit("changeSidebar", { state: true });
+    if (!this.settings.common.hideSideBar)
+      this.$store.commit("changeSidebar", { state: true });
     let pathArr = app.getAppPath("exe").split("\\");
     let path = pathArr.slice(0, pathArr.length - 1).join("\\");
     let lanPlayParams = [];
@@ -190,7 +191,8 @@ export default {
     });
   },
   beforeDestroy() {
-    this.$store.commit("changeSidebar", { state: false });
+    if (!this.settings.common.hideSideBar)
+      this.$store.commit("changeSidebar", { state: false });
   },
   methods: {
     onbtnConfirmConnClick() {
@@ -265,14 +267,14 @@ export default {
               });
               ipcRenderer.send(
                 "fetched-room",
-                JSON.stringify(this.servers[index].rooms)
+                JSON.stringify(this.servers[this.connIndex].rooms)
               );
             });
           }
         })
         .catch(() => {
           this.$store.commit("updateServer", {
-            index: index,
+            index: this.connIndex,
             data: JSON.parse(`{"online":-1,"idle":-1,"version":"-","ping":-1}`),
           });
           ipcRenderer.send("showMsg", "updErr");
