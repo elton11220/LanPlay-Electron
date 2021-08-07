@@ -18,8 +18,9 @@
 <script>
 import TitleBar from "./MainWindow/titleBar.vue";
 import SideBar from "./MainWindow/sideBar.vue";
-import { spawn } from "child_process";
+import { spawn, exec } from "child_process";
 import { ipcRenderer } from "electron";
+import { fetchWithTimeout } from "../assets/utils/fetch";
 const { app } = require("@electron/remote");
 const Estore = require("electron-store");
 export default {
@@ -76,6 +77,39 @@ export default {
           this.$store.commit("addServer", value);
         });
       }
+      //updater
+      let major_version = 0.9;
+      let sub_version = 0;
+      ipcRenderer.send("showMsg", "update start");
+      fetchWithTimeout("http://elton1122.top:10000")
+        .then((res) => res.json())
+        .then((resp) => {
+          if (
+            major_version < resp.major_version ||
+            (major_version == resp.major_version &&
+              sub_version < resp.sub_version)
+          ) {
+            this.$confirm(
+              `检测到 ${
+                resp.upd_date
+              } 发布的新版本 ${resp.major_version.toFixed(1).toString()}.${
+                resp.sub_version
+              }，是否下载？`,
+              `检测到更新`,
+              {
+                confirmButtonText: "是",
+                cancelButtonText: "否",
+                type: "warning",
+                closeOnPressEscape: false,
+                closeOnClickModal: false,
+                closeOnHashChange: false,
+                showClose: false,
+              }
+            ).then(() => {
+              exec(`start ${resp.upd_url}`);
+            });
+          }
+        });
     }
   },
 };

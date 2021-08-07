@@ -5,7 +5,7 @@
         <div class="icon iconfont icon-nintendoswitch"></div>
         <div class="title">LanPlay</div>
       </div>
-      <div class="tip">#dev_210807#</div>
+      <div class="tip">#dev_210808#</div>
       <div class="control">
         <div class="btn" @click="onbtnMinClick()">
           <div class="btnMin"></div>
