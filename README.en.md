@@ -32,5 +32,6 @@ npm run electron:build
 
 [elton11220@foxmail.com](mailto:elton11220@foxmail.com)
 
-![img1](https://images.gitee.com/uploads/images/2021/0807/171641_aa611fdd_7872762.png "sc1.png")
-![img2](https://images.gitee.com/uploads/images/2021/0807/171707_2cb7de20_7872762.png "sc2.png")
+![sc1](https://images.gitee.com/uploads/images/2021/0808/112631_bdec99bb_7872762.png "sc1.png")
+![sc2](https://images.gitee.com/uploads/images/2021/0808/112644_93497a49_7872762.png "sc2.png")
+![sc3](https://images.gitee.com/uploads/images/2021/0808/112703_e9f0874b_7872762.png "sc3.png")
