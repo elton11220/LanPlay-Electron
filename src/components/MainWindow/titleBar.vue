@@ -5,7 +5,7 @@
         <div class="icon iconfont icon-nintendoswitch"></div>
         <div class="title">LanPlay</div>
       </div>
-      <div class="tip">#dev_210808#</div>
+      <div class="tip">#v1.0.0.210808_rc#</div>
       <div class="control">
         <div class="btn" @click="onbtnMinClick()">
           <div class="btnMin"></div>
@@ -49,6 +49,9 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+  display: none;
 }
 .navigator > .logo {
   position: absolute;

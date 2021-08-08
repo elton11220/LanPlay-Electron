@@ -1,7 +1,7 @@
 const state = {
     settings: {
         common: {
-            autorefresh: false,
+            autorefresh: true,
             autointerval: 10,
             hideSideBar: false,
             hideLanPlayConsole: true

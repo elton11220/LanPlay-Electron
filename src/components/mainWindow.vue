@@ -67,7 +67,7 @@ export default {
       let estore = new Estore();
       let tempSettings = {};
       tempSettings.common = estore.get("common", {
-        autorefresh: false,
+        autorefresh: true,
         autointerval: 10,
         hideSideBar: false,
         hideLanPlayConsole: true,

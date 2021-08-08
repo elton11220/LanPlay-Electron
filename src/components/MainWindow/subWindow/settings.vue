@@ -231,28 +231,22 @@
       <el-tab-pane label="更新日志" name="third">
         <div class="block">
           <el-timeline>
-            <el-timeline-item timestamp="2021/6/15" placement="top">
+            <el-timeline-item timestamp="2021/8/8" placement="top">
               <el-card>
-                <h4>LanPlay GUI beta 版测试</h4>
-                <p>绿胡子大叔 提交于 2021/6/15</p>
-              </el-card>
-            </el-timeline-item>
-            <el-timeline-item timestamp="2021/5/29" placement="top">
-              <el-card>
-                <h4>LanPlay GUI 开始开发</h4>
-                <p>绿胡子大叔 提交于 2021/5/29</p>
+                <h4>LanPlay GUI v1.0.0.210808_rc</h4>
+                <p>绿胡子大叔 2021/8/8</p>
               </el-card>
             </el-timeline-item>
             <el-timeline-item timestamp="2021/3/12" placement="top">
               <el-card>
-                <h4>C++ Qt 版 VLAN Online Platform</h4>
-                <p>绿胡子大叔 提交于 2021/3/12</p>
+                <h4>VLAN Online Platform Qt</h4>
+                <p>绿胡子大叔 2021/3/12</p>
               </el-card>
             </el-timeline-item>
             <el-timeline-item timestamp="2020/8/18" placement="top">
               <el-card>
-                <h4>C# WinForm 版 VLAN Online Platform</h4>
-                <p>绿胡子大叔 提交于 2020/8/18</p>
+                <h4>VLAN Online Platform CSharp</h4>
+                <p>绿胡子大叔 2020/8/18</p>
               </el-card>
             </el-timeline-item>
           </el-timeline>
