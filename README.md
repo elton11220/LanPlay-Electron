@@ -28,7 +28,7 @@ npm run electron:serve
 npm run electron:build
 ```
 
-## Concact
+## 联系方式
 
 [elton11220@foxmail.com](mailto:elton11220@foxmail.com)
 
