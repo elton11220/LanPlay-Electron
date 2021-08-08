@@ -28,6 +28,48 @@ npm run electron:serve
 npm run electron:build
 ```
 
+## 更新服务部署
+
+### Node.js
+
+软件使用nodejs编写了简易的更新服务器脚本，当然您也选择可以自行编写服务器程序
+
+```javascript
+//nodejs 服务端代码
+const express = require('express')
+
+var app = express()
+
+app.get('/', (req, res) => {
+    res.write(JSON.stringify({
+        major_version:1.1,
+        sub_version:1,
+        upd_date:"20210808",
+        upd_url:"https://www.baidu.com/",
+        upd_level:1,
+        new_server:""
+    }))
+    res.end()
+})
+
+app.listen(10000)
+```
+
+### JSON格式
+
+```json
+{
+    "major_version":1.0, //主版本号
+    "sub_version":0,  //次要版本号
+    "upd_date":"20210808", //更新日期
+    "upd_url":"https://www.baidu.com/", //更新包下载链接
+    "upd_level":1, //是否强制更新 0否 1是
+    "new_server":"" //备用更新服务器地址
+}
+```
+
+> 当准备更换更新服务器时，可以在new_server中填写新服务器地址，并在新版本中修改更新模块相应代码。老版本客户端将从新服务器中接收更新信息
+
 ## 联系方式
 
 [elton11220@foxmail.com](mailto:elton11220@foxmail.com)

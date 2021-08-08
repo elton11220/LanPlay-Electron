@@ -28,6 +28,48 @@ npm run electron:serve
 npm run electron:build
 ```
 
+## Update service deployment
+
+### Node.js
+
+We wrote a simple update server script with Node.js. Of course, you can also choose to write your own server
+
+```javascript
+//nodejs server
+const express = require('express')
+
+var app = express()
+
+app.get('/', (req, res) => {
+    res.write(JSON.stringify({
+        major_version:1.1,
+        sub_version:1,
+        upd_date:"20210808",
+        upd_url:"https://github.com/",
+        upd_level:1,
+        new_server:""
+    }))
+    res.end()
+})
+
+app.listen(10000)
+```
+
+### JSON  format
+
+```json
+{
+    "major_version":1.0, //Major version
+    "sub_version":0,  //Sub version
+    "upd_date":"20210808", //Update Date
+    "upd_url":"https://www.baidu.com/", //Download link
+    "upd_level":1, //Force update  0 false | 1 true
+    "new_server":"" //alternate update server address
+}
+```
+
+> When you are ready to replace the update server, you can fill in the new_server field with your new update server address, and modify the corresponding code of the update module in the new version. The old version client will receive update information from the new server
+
 ## Concact
 
 [elton11220@foxmail.com](mailto:elton11220@foxmail.com)
