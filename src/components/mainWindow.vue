@@ -66,22 +66,48 @@ export default {
       //load local settings from json
       let estore = new Estore();
       let tempSettings = {};
-      tempSettings.common = estore.get("common");
-      tempSettings.lanplay = estore.get("lanplay");
-      tempSettings.states = estore.get("states");
+      tempSettings.common = estore.get("common", {
+        autorefresh: false,
+        autointerval: 10,
+        hideSideBar: false,
+        hideLanPlayConsole: true,
+      });
+      tempSettings.lanplay = estore.get("lanplay", {
+        interface: 0,
+        broadcast: false,
+        fakeinternet: false,
+        pmtu: {
+          enable: false,
+          value: 1500,
+        },
+        proxy: {
+          enable: false,
+          value: "",
+        },
+      });
+      tempSettings.states = estore.get("states", {
+        playingID: -1,
+        sidebar: false,
+      });
       tempSettings.lanplay.interfaces = [{ value: 0, label: "全选" }];
       this.$store.commit("assignSettings", tempSettings);
-      let tempServerList = estore.get("servers");
+      let tempServerList = estore.get("servers", []);
       if (tempServerList.length > 0) {
         tempServerList.forEach((value) => {
           this.$store.commit("addServer", value);
         });
       }
       //updater
+      let updServer = estore.get("alt_updServer", "");
+      if (updServer === "") updServer = "http://elton1122.top:10000"; //default update server address
       let major_version = 0.9;
       let sub_version = 0;
+      if (updServer === "http://elton1122.top:10000")
+        //updServer === "alternate server address"
+        //When the alternate server address in the local JSON file is the same as the address in quotation marks, the alternate server address in JSON will be empty
+        estore.set({ alt_updServer: "" });
       ipcRenderer.send("showMsg", "update start");
-      fetchWithTimeout("http://elton1122.top:10000")
+      fetchWithTimeout(updServer)
         .then((res) => res.json())
         .then((resp) => {
           if (
@@ -89,6 +115,10 @@ export default {
             (major_version == resp.major_version &&
               sub_version < resp.sub_version)
           ) {
+            if (resp.new_server != "") {
+              estore.set({ alt_updServer: resp.new_server });
+              this.$message("更新服务地址已更换，将在下次启动时生效");
+            }
             this.$confirm(
               `检测到 ${
                 resp.upd_date
@@ -105,10 +135,33 @@ export default {
                 closeOnHashChange: false,
                 showClose: false,
               }
-            ).then(() => {
-              exec(`start ${resp.upd_url}`);
-            });
+            )
+              .then(() => {
+                exec(`start ${resp.upd_url}`);
+                app.quit();
+              })
+              .catch(() => {
+                if (resp.upd_level == 1) {
+                  this.$alert(
+                    "此版本含有强制更新标记，拒绝更新将退出程序",
+                    "警告",
+                    {
+                      confirmButtonText: "确定",
+                      showClose: false,
+                      closeOnClickModal: false,
+                      closeOnPressEscape: false,
+                      closeOnHashChange: false,
+                      callback: () => {
+                        app.quit();
+                      },
+                    }
+                  );
+                }
+              });
           }
+        })
+        .catch(() => {
+          this.$message.error("检查更新失败");
         });
     }
   },
