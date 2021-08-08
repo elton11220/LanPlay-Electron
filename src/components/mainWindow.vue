@@ -23,6 +23,7 @@ import { ipcRenderer } from "electron";
 import { fetchWithTimeout } from "../assets/utils/fetch";
 const { app } = require("@electron/remote");
 const Estore = require("electron-store");
+import path from 'path'
 export default {
   components: {
     TitleBar,
@@ -40,9 +41,11 @@ export default {
     if (this.$store.state.settings.settings.lanplay.interfaces.length > 1)
       return;
     else {
-      let pathArr = app.getAppPath("exe").split("\\");
-      let path = pathArr.slice(0, pathArr.length - 1).join("\\");
-      const interfaceLanPlay = spawn(path + "\\lan-play-win64.exe", [
+      let lanPlayPath = path.join(process.cwd(), '/resources/extraResources','lan-play-win64.exe')
+      if (process.env.NODE_ENV === 'development') {
+        lanPlayPath = path.join(process.cwd(), '/build/extraResources','lan-play-win64.exe')
+      }
+      const interfaceLanPlay = spawn(lanPlayPath, [
         "--list-if",
       ]);
       let interfaces;

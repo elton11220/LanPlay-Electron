@@ -1,7 +1,9 @@
 {
-  "name": "lanplay",
+  "name": "lanplay_electron",
   "version": "0.1.0",
   "private": true,
+  "author": "Elton11220",
+  "description": "This is a lanplay GUI developed with electron",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

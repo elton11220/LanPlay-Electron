@@ -125,7 +125,7 @@ import { ipcRenderer } from "electron";
 import { fetchWithTimeout } from "../../../assets/utils/fetch";
 import { sanitizeData } from "../../../assets/utils/rooms";
 import Room from "../rooms/Room.vue";
-const { app } = require("@electron/remote");
+import path from 'path';
 export default {
   components: {
     Room,
@@ -166,8 +166,6 @@ export default {
   mounted() {
     if (!this.settings.common.hideSideBar)
       this.$store.commit("changeSidebar", { state: true });
-    let pathArr = app.getAppPath("exe").split("\\");
-    let path = pathArr.slice(0, pathArr.length - 1).join("\\");
     let lanPlayParams = [];
     lanPlayParams.push(`--relay-server-addr ${this.connUrl}`);
     //LanPlay parameters
@@ -189,7 +187,11 @@ export default {
       detached: !this.settings.common.hideLanPlayConsole,
     };
     //
-    this.lanplay = spawn(path + "\\lan-play-win64.exe", lanPlayParams, cpPara);
+    let lanPlayPath = path.join(process.cwd(), '/resources/extraResources','lan-play-win64.exe')
+    if (process.env.NODE_ENV === 'development') {
+      lanPlayPath = path.join(process.cwd(), '/build/extraResources','lan-play-win64.exe')
+    }
+    this.lanplay = spawn(lanPlayPath, lanPlayParams, cpPara);
     ipcRenderer.send("showMsg", this.connData);
     let autoRefreshTimer = setInterval(() => {
       ipcRenderer.send("showMsg", "autorefresh");
