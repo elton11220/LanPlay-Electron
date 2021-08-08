@@ -1,11 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2578669 */
-  src: url("//at.alicdn.com/t/font_2578669_sb25f7i8c8i.woff2?t=1622282087457")
-      format("woff2"),
-    url("//at.alicdn.com/t/font_2578669_sb25f7i8c8i.woff?t=1622282087457")
-      format("woff"),
-    url("//at.alicdn.com/t/font_2578669_sb25f7i8c8i.ttf?t=1622282087457")
-      format("truetype");
+  src: url('iconfont.woff2?t=1628400022284') format('woff2'),
+       url('iconfont.woff?t=1628400022284') format('woff'),
+       url('iconfont.ttf?t=1628400022284') format('truetype');
 }
 
 .iconfont {
@@ -23,3 +20,4 @@
 .icon-guanbi:before {
   content: "\e795";
 }
+

@@ -5,7 +5,7 @@
 </template>
 
 <style>
-@import url("./assets/iconfont.css");
+@import url("./assets/fonts/iconfont.css");
 * {
   padding: 0;
   margin: 0;
