@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { spawn } from "child_process";
+import { spawn,exec } from "child_process";
 import { ipcRenderer } from "electron";
 import { fetchWithTimeout } from "../../../assets/utils/fetch";
 import { sanitizeData } from "../../../assets/utils/rooms";
@@ -200,8 +200,10 @@ export default {
     //launch lanplay
     if(process.platform == "win32")
       this.lanplay = spawn(lanPlayPath, lanPlayParams, cpPara);
-    else if(process.platform == "darwin")
-      this.lanplay = spawn("sudo",[lanPlayPath,...lanPlayParams],{stdio:'inherit'})
+    else if(process.platform == "darwin"){
+      let params = lanPlayParams.toString().split(",").join(" ");
+      this.lanplay = exec(`osascript -e 'do shell script "sudo ${lanPlayPath} ${params}" with administrator privileges'`)
+    }
     //
     ipcRenderer.send("showMsg", this.connData);
     let autoRefreshTimer = setInterval(() => {
@@ -229,8 +231,23 @@ export default {
       let kill;
       if(process.platform == "win32")
         kill = spawn("taskkill", ["/pid", this.lanplay.pid, "/f", "/t"]);
-      else if (process.platform == "darwin")
-        kill = spawn("osascript",[`-e do shell script "kill ${this.lanplay.pid}" with administrator privileges`]);
+      else if (process.platform == "darwin"){
+        let ps = spawn("ps",['aux']);
+        let pids = [];
+        ps.stdout.on('data',(data)=>{
+          let arr = data.toString().split('\n').filter(value=>value.includes("lan-play-macos"));
+          if(arr.length > 0)
+            pids = [...pids,...arr.map(value=>value.split(/\s+/)[1])];
+        })
+        ps.stdout.on('close',()=>{
+          kill = exec(`osascript -e 'do shell script "kill -9 ${pids.toString().split(",").join(" ")}" with administrator privileges'`,()=>{
+            this.closeTip = false;
+            this.$router.push("/serverList");
+            this.$store.commit("updatePlayingID", -1);
+          })
+        })
+      }
+      //win32
       kill.on("close", () => {
         this.lanplay.kill();
         this.closeTip = false;
