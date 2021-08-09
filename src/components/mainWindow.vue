@@ -41,10 +41,17 @@ export default {
     if (this.$store.state.settings.settings.lanplay.interfaces.length > 1)
       return;
     else {
-      let lanPlayPath = path.join(process.cwd(), '/resources/extraResources','lan-play-win64.exe')
+      //lanplay
+      let lanPlayFileName = "";
+      if(process.platform == "win32")
+        lanPlayFileName = "lan-play-win64.exe";
+      else if (process.platform == "darwin")
+        lanPlayFileName = "lan-play-macos"
+      let lanPlayPath = path.join(process.cwd(), '/resources/extraResources',lanPlayFileName)
       if (process.env.NODE_ENV === 'development') {
-        lanPlayPath = path.join(process.cwd(), '/build/extraResources','lan-play-win64.exe')
+        lanPlayPath = path.join(process.cwd(), '/build/extraResources',lanPlayFileName)
       }
+      //
       const interfaceLanPlay = spawn(lanPlayPath, [
         "--list-if",
       ]);
