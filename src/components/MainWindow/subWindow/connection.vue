@@ -535,7 +535,7 @@ export default {
   height: 50px;
   justify-content: space-evenly;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 16px;
   padding-left: 70px;
   padding-right: 70px;
 }

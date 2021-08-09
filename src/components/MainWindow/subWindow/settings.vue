@@ -61,7 +61,7 @@
               </div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" v-if="isWindows">
             <div class="left">
               <div class="title">
                 隐藏LanPlay窗口
@@ -231,6 +231,12 @@
       <el-tab-pane label="更新日志" name="third">
         <div class="block">
           <el-timeline>
+            <el-timeline-item timestamp="2021/8/10" placement="top">
+              <el-card>
+                <h4>LanPlay GUI v1.0.0.210810</h4>
+                <p>适配macOS，微调UI</p>
+              </el-card>
+            </el-timeline-item>
             <el-timeline-item timestamp="2021/8/8" placement="top">
               <el-card>
                 <h4>LanPlay GUI v1.0.0.210808_rc</h4>
@@ -317,6 +323,9 @@ export default {
     proxyEnable() {
       return this.$store.state.settings.settings.lanplay.proxy.enable;
     },
+    isWindows(){
+      return process.platform == "win32"
+    }
   },
   beforeDestroy() {
     ipcRenderer.send("saveLocalSettings", this.savedsettings);

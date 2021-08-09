@@ -110,7 +110,7 @@ export default {
       //updater
       let updServer = estore.get("alt_updServer", "");
       if (updServer === "") updServer = "http://elton1122.top:10000"; //default update server address
-      let major_version = 0.9;
+      let major_version = 1.0;
       let sub_version = 0;
       if (updServer === "http://elton1122.top:10000")
         //updServer === "alternate server address"
