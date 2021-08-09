@@ -167,7 +167,8 @@ export default {
     if (!this.settings.common.hideSideBar)
       this.$store.commit("changeSidebar", { state: true });
     let lanPlayParams = [];
-    lanPlayParams.push(`--relay-server-addr ${this.connUrl}`);
+    lanPlayParams.push("--relay-server-addr");
+    lanPlayParams.push(this.connUrl);
     //LanPlay parameters
     if (this.settings.lanplay.interface != 0)
       lanPlayParams.push(`--netif ${this.settings.lanplay.interface}`);
@@ -180,7 +181,7 @@ export default {
       lanPlayParams.push(
         `--socks5-server-addr ${this.settings.lanplay.proxy.value}`
       );
-    //child_process parameters
+    //child_process parameters windows only
     let cpPara = {
       shell: true,
       stdio: "inherit",
@@ -196,8 +197,12 @@ export default {
     if (process.env.NODE_ENV === 'development') {
       lanPlayPath = path.join(process.cwd(), '/build/extraResources',lanPlayFileName)
     }
+    //launch lanplay
+    if(process.platform == "win32")
+      this.lanplay = spawn(lanPlayPath, lanPlayParams, cpPara);
+    else if(process.platform == "darwin")
+      this.lanplay = spawn("sudo",[lanPlayPath,...lanPlayParams],{stdio:'inherit'})
     //
-    this.lanplay = spawn(lanPlayPath, lanPlayParams, cpPara);
     ipcRenderer.send("showMsg", this.connData);
     let autoRefreshTimer = setInterval(() => {
       ipcRenderer.send("showMsg", "autorefresh");
@@ -221,7 +226,11 @@ export default {
       this.getConnectionInfo();
     },
     btnKillHandler() {
-      let kill = spawn("taskkill", ["/pid", this.lanplay.pid, "/f", "/t"]);
+      let kill;
+      if(process.platform == "win32")
+        kill = spawn("taskkill", ["/pid", this.lanplay.pid, "/f", "/t"]);
+      else if (process.platform == "darwin")
+        kill = spawn("osascript",[`-e do shell script "kill ${this.lanplay.pid}" with administrator privileges`]);
       kill.on("close", () => {
         this.lanplay.kill();
         this.closeTip = false;
