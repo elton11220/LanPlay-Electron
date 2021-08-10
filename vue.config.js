@@ -3,7 +3,7 @@ module.exports = {
         electronBuilder: {
             nodeIntegration: true,
             builderOptions: {
-                "productName": "LanPlay Electron",
+                "productName": "LanPlay_Electron",
                 "appId": "com.elton11220.lanplay_electron",
                 "extraResources": {
                     "from": "./build/extraResources/",

@@ -35,7 +35,7 @@ export default {
   computed: {
     collapse() {
       return this.$store.state.settings.settings.states.sidebar;
-    },
+    }
   },
   mounted() {
     if (this.$store.state.settings.settings.lanplay.interfaces.length > 1)
@@ -43,11 +43,14 @@ export default {
     else {
       //lanplay
       let lanPlayFileName = "";
-      if(process.platform == "win32")
+      let lanPlayPath;
+      if(process.platform == "win32"){
         lanPlayFileName = "lan-play-win64.exe";
-      else if (process.platform == "darwin")
+        lanPlayPath = path.join(process.cwd(), '/resources/extraResources',lanPlayFileName)
+      }else if (process.platform == "darwin"){
         lanPlayFileName = "lan-play-macos"
-      let lanPlayPath = path.join(process.cwd(), '/resources/extraResources',lanPlayFileName)
+        lanPlayPath = path.join(__dirname.replace("app.asar",""),"/extraResources",lanPlayFileName)
+      }
       if (process.env.NODE_ENV === 'development') {
         lanPlayPath = path.join(process.cwd(), '/build/extraResources',lanPlayFileName)
       }
