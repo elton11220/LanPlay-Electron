@@ -163,7 +163,9 @@ export default {
                 if (process.platform == "win32") exec(`start ${resp.upd_url}`);
                 else if (process.platform == "darwin")
                   exec(`open ${resp.upd_url}`);
-                app.quit();
+                setTimeout(() => {
+                  app.quit();
+                }, 2500);
               })
               .catch(() => {
                 if (resp.upd_level == 1) {
