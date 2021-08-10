@@ -243,7 +243,7 @@ export default {
             pids = [...pids,...arr.map(value=>value.split(/\s+/)[1])];
         })
         ps.stdout.on('close',()=>{
-          kill = exec(`osascript -e 'do shell script "kill -9 ${pids.toString().split(",").join(" ")}" with administrator privileges'`,()=>{
+          exec(`osascript -e 'do shell script "kill -9 ${pids.toString().split(",").join(" ")}" with administrator privileges'`,()=>{
             this.closeTip = false;
             this.$router.push("/serverList");
             this.$store.commit("updatePlayingID", -1);

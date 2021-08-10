@@ -133,17 +133,20 @@
       </div>
     </div>
     <div class="control">
+      <div class="btn" style="width:90px;" v-if="isDarwin" @click="cleanDarwinProcess()">
+        <div style="color:#C0C0C0;font-size:13px;">清理进程</div>
+      </div>
       <div class="btn" @click="getAllServerInfo()">
-        <span
+        <div
           class="el-icon-refresh"
-          style="color:#C0C0C0;font-size:15px;font-weight:bold;"
-        ></span>
+          style="color:#C0C0C0;font-size:15px;font-weight:bold;transform:translateY(2px);"
+        ></div>
       </div>
       <div class="btn" v-if="!favour" @click="onbtnAddServerClick()">
-        <span
+        <div
           class="el-icon-plus"
-          style="color:#C0C0C0;font-size:15px;font-weight:bold;"
-        ></span>
+          style="color:#C0C0C0;font-size:15px;font-weight:bold;transform:translateY(2px);"
+        ></div>
       </div>
     </div>
     <el-drawer
@@ -313,8 +316,33 @@ import { fetchWithTimeout } from "../../assets/utils/fetch";
 import { ipcRenderer } from "electron";
 import { sanitizeData } from "../../assets/utils/rooms";
 import Room from "./rooms/Room.vue";
+import { spawn,exec } from "child_process";
 export default {
   methods: {
+    cleanDarwinProcess (){
+      this.$confirm('macOS系统中，在结束LanPlay时需要提升权限，若此时您关闭了密码验证提示框，将会导致LanPlay进程无法关闭占用而占用资源。此操作将会关闭所有的LanPlay进程，确定继续吗？', '清理进程', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showClose:false,
+        type: 'info'
+      }).then(() => {
+        let ps = spawn("ps",['aux']);
+        let pids = [];
+        ps.stdout.on('data',(data)=>{
+          let arr = data.toString().split('\n').filter(value=>value.includes("lan-play-macos"));
+          if(arr.length > 0)
+            pids = [...pids,...arr.map(value=>value.split(/\s+/)[1])];
+        })
+        ps.stdout.on('close',()=>{
+          exec(`osascript -e 'do shell script "kill -9 ${pids.toString().split(",").join(" ")}" with administrator privileges'`,()=>{
+            this.$message({
+              type:'success',
+              message:`成功清理了${pids.length}个进程`
+            })
+          })
+        })
+      })
+    },
     saveLocalServerList() {
       let serversData = this.servers.map((value) => {
         return {
@@ -540,6 +568,9 @@ export default {
       });
       return count;
     },
+    isDarwin(){
+      return process.platform == "darwin"
+    }
   },
   components: {
     Room,
