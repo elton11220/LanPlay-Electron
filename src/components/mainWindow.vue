@@ -23,7 +23,7 @@ import { ipcRenderer } from "electron";
 import { fetchWithTimeout } from "../assets/utils/fetch";
 const { app } = require("@electron/remote");
 const Estore = require("electron-store");
-import path from 'path'
+import path from "path";
 export default {
   components: {
     TitleBar,
@@ -35,7 +35,7 @@ export default {
   computed: {
     collapse() {
       return this.$store.state.settings.settings.states.sidebar;
-    }
+    },
   },
   mounted() {
     if (this.$store.state.settings.settings.lanplay.interfaces.length > 1)
@@ -44,20 +44,30 @@ export default {
       //lanplay
       let lanPlayFileName = "";
       let lanPlayPath;
-      if(process.platform == "win32"){
+      if (process.platform == "win32") {
         lanPlayFileName = "lan-play-win64.exe";
-        lanPlayPath = path.join(process.cwd(), '/resources/extraResources',lanPlayFileName)
-      }else if (process.platform == "darwin"){
-        lanPlayFileName = "lan-play-macos"
-        lanPlayPath = path.join(__dirname.replace("app.asar",""),"/extraResources",lanPlayFileName)
+        lanPlayPath = path.join(
+          process.cwd(),
+          "/resources/extraResources",
+          lanPlayFileName
+        );
+      } else if (process.platform == "darwin") {
+        lanPlayFileName = "lan-play-macos";
+        lanPlayPath = path.join(
+          __dirname.replace("app.asar", ""),
+          "/extraResources",
+          lanPlayFileName
+        );
       }
-      if (process.env.NODE_ENV === 'development') {
-        lanPlayPath = path.join(process.cwd(), '/build/extraResources',lanPlayFileName)
+      if (process.env.NODE_ENV === "development") {
+        lanPlayPath = path.join(
+          process.cwd(),
+          "/build/extraResources",
+          lanPlayFileName
+        );
       }
       //
-      const interfaceLanPlay = spawn(lanPlayPath, [
-        "--list-if",
-      ]);
+      const interfaceLanPlay = spawn(lanPlayPath, ["--list-if"]);
       let interfaces;
       interfaceLanPlay.stdout.on("data", (data) => {
         interfaces = data
@@ -150,7 +160,9 @@ export default {
               }
             )
               .then(() => {
-                exec(`start ${resp.upd_url}`);
+                if (process.platform == "win32") exec(`start ${resp.upd_url}`);
+                else if (process.platform == "darwin")
+                  exec(`open ${resp.upd_url}`);
                 app.quit();
               })
               .catch(() => {
